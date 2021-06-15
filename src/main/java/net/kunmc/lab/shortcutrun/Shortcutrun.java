@@ -30,24 +30,6 @@ public final class Shortcutrun extends JavaPlugin {
         new Command(this).register();
 
         saveDefaultConfig();
-
-        Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
-        Objective objective = scoreboard.getObjective(SCOREBOARD_NAME);
-        if (objective == null) {
-            scoreboard.registerNewObjective(SCOREBOARD_NAME, "", SCOREBOARD_NAME);
-        }
-
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (active) {
-                    Bukkit.getOnlinePlayers().forEach(player -> {
-                        int footings = getFooting(player);
-                        player.sendActionBar(String.valueOf(footings));
-                    });
-                }
-            }
-        }.runTaskTimer(this, 0, 1);
     }
 
     @Override
@@ -87,29 +69,12 @@ public final class Shortcutrun extends JavaPlugin {
         return getPassengerCount(entity.getPassengers().get(0)) + 1;
     }
 
-    private void setScoreboard(Scoreboard scoreboard) {
-        Objective objective = scoreboard.getObjective(SCOREBOARD_NAME);
-        if (objective == null) {
-            scoreboard.registerNewObjective(SCOREBOARD_NAME, "", SCOREBOARD_NAME);
-        }
-    }
-
-    public int getFooting(Player player) {
-        Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
-        setScoreboard(scoreboard);
-        return scoreboard.getObjective(SCOREBOARD_NAME).getScore(player.getName()).getScore();
-    }
-
-    public void setFooting(Player player, int value) {
-        Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
-        setScoreboard(scoreboard);
-        scoreboard.getObjective(SCOREBOARD_NAME).getScore(player.getName()).setScore(value);
-    }
-
     public void renderFooting(Player player) {
-        int footings = getFooting(player);
+        int footings = 0;
         int realFootings = getPassengerCount(player) / 2;
         int dif = footings - realFootings;
+
+
         if (dif == 0) {
             return;
         }

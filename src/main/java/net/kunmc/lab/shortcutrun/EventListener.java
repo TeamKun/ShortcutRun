@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -19,7 +18,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import org.spigotmc.event.entity.EntityDismountEvent;
@@ -33,40 +31,6 @@ public class EventListener implements Listener {
 
     public EventListener(Shortcutrun shortcutrun) {
         this.shortcutrun = shortcutrun;
-    }
-
-    @EventHandler
-    public void pickupFooting(PlayerMoveEvent e) {
-        if (!shortcutrun.isActive()) {
-            return;
-        }
-        Player player = e.getPlayer();
-        if (isExcluded(player)) {
-            return;
-        }
-        Vector to = e.getTo().toVector();
-        Vector from = e.getFrom().toVector();
-        if (to.distance(from) == 0) {
-            return;
-        }
-        player.getWorld().getEntities().forEach(entity -> {
-            if (!(entity instanceof ArmorStand)) {
-                return;
-            }
-            ArmorStand armorStand = (ArmorStand) entity;
-            if (!(armorStand.getItem(EquipmentSlot.HEAD).getType().equals(Material.OAK_SLAB))) {
-                return;
-            }
-            if (!armorStand.isSmall()) {
-                return;
-            }
-            if (armorStand.getLocation().distance(player.getLocation()) > shortcutrun.getConfig().getDouble("distance", 1)) {
-                return;
-            }
-            armorStand.remove();
-            shortcutrun.setFooting(player, shortcutrun.getFooting(player) + 1);
-            shortcutrun.renderFooting(player);
-        });
     }
 
     @EventHandler
@@ -106,50 +70,12 @@ public class EventListener implements Listener {
     }
 
     @EventHandler
-    public void placeFooting(PlayerMoveEvent e) {
-        if (!shortcutrun.isActive()) {
-            return;
-        }
-        Player player = e.getPlayer();
-        if (isExcluded(player)) {
-            return;
-        }
-        if (!player.isOnGround()) {
-            return;
-        }
-        Location to = e.getTo();
-        Location from = e.getFrom();
-        if (to.getBlockY() - from.getBlockY() != 0) {
-            return;
-        }
-        Block block = to.getWorld().getBlockAt(to.getBlockX(), to.getBlockY() - 1, to.getBlockZ());
-        if (!block.getType().equals(Material.AIR)) {
-            return;
-        }
-        int footings = shortcutrun.getFooting(player);
-        if (footings <= 0) {
-            return;
-        }
-        shortcutrun.setFooting(player, footings - 1);
-        shortcutrun.renderFooting(player);
-        player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, shortcutrun.getConfig().getInt("duration", 60), shortcutrun.getConfig().getInt("level", 0)));
-        block.setType(Material.OAK_PLANKS);
-        shortcutrun.addLocation(block.getLocation());
-    }
-
-    @EventHandler
     public void onDismount(EntityDismountEvent e) {
         if (!(e.getDismounted() instanceof Player)) {
             return;
         }
         shortcutrun.removePassengers(e.getEntity());
         e.getEntity().remove();
-    }
-
-    @EventHandler
-    public void onDeath(PlayerDeathEvent e) {
-        if (shortcutrun.getConfig().getBoolean("reset", true))
-        shortcutrun.setFooting(e.getEntity(), 0);
     }
 
     @EventHandler
