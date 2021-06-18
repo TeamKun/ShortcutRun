@@ -1,6 +1,7 @@
-package net.kunmc.lab.shortcutrun.play;
+package net.kunmc.lab.shortcutrun.listener;
 
 import net.kunmc.lab.shortcutrun.ShortcutRunPlugin;
+import net.kunmc.lab.shortcutrun.manager.MainManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -22,9 +23,9 @@ public class PlayEventListener implements Listener {
     public void onMove(PlayerMoveEvent e) {
 
         ShortcutRunPlugin pluginInstance = ShortcutRunPlugin.getInstance();
-        GameManager gameManager = pluginInstance.getGameManager();
+        MainManager mainManager = pluginInstance.getMainManager();
 
-        if (!gameManager.isPlaying()) {
+        if (!mainManager.isPlaying()) {
             return;
         }
 
@@ -35,7 +36,7 @@ public class PlayEventListener implements Listener {
         if (!player.isOnGround()) {
             return;
         }
-        int footingCount = gameManager.getFooting(player);
+        int footingCount = mainManager.getFooting(player);
         if (footingCount <= 0) {
             return;
         }
@@ -66,8 +67,8 @@ public class PlayEventListener implements Listener {
             return;
         }
 
-        gameManager.placeFooting(player, block);
-        gameManager.setFooting(player, footingCount - 1);
+        mainManager.placeFooting(player, block);
+        mainManager.setFooting(player, footingCount - 1);
 
         // shortcutrun.renderFooting(player);
         // player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, shortcutrun.getConfig().getInt("duration", 60), shortcutrun.getConfig().getInt("level", 0)));

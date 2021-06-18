@@ -1,4 +1,4 @@
-package net.kunmc.lab.shortcutrun.core;
+package net.kunmc.lab.shortcutrun.gameobject;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -13,8 +13,12 @@ public class Stage {
     private String name;
     private List<Footing> footings = new ArrayList<>();
 
+    public Stage(String name) {
+        this.name = name;
+    }
+
     public static Stage fromJsonObject(JsonObject jsonObject) {
-        Stage stage = new Stage();
+        Stage stage = new Stage("");
         stage.load(jsonObject);
         return stage;
     }
@@ -52,5 +56,9 @@ public class Stage {
 
     public String getName() {
         return name;
+    }
+
+    public List<Footing> getFootings() {
+        return footings;
     }
 }

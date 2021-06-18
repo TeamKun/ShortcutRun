@@ -1,4 +1,4 @@
-package net.kunmc.lab.shortcutrun.core;
+package net.kunmc.lab.shortcutrun.gameobject;
 
 import com.google.gson.JsonObject;
 import org.bukkit.util.Vector;
@@ -39,5 +39,9 @@ public class Footing {
         jsonObject.addProperty("type", type.toString());
 
         return jsonObject;
+    }
+
+    public Vector getLocation() {
+        return location;
     }
 }

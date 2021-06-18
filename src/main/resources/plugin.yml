@@ -1,8 +1,4 @@
 name: Shortcutrun
 version: ${project.version}
-main: net.kunmc.lab.shortcutrun.Shortcutrun
-api-version: 1.15
-commands:
-  shortcutrun:
-    permission:
-      default: op
+main: net.kunmc.lab.shortcutrun.ShortcutRunPlugin
+api-version: 1.16

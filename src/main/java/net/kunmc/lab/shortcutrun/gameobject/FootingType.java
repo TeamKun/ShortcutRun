@@ -1,4 +1,4 @@
-package net.kunmc.lab.shortcutrun.core;
+package net.kunmc.lab.shortcutrun.gameobject;
 
 public enum FootingType {
     Single,

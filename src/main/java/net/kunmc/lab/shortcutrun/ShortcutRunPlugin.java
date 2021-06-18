@@ -1,25 +1,31 @@
 package net.kunmc.lab.shortcutrun;
 
-import net.kunmc.lab.shortcutrun.core.StageList;
-import net.kunmc.lab.shortcutrun.exception.ConfigLoadException;
-import net.kunmc.lab.shortcutrun.play.GameManager;
-import net.kunmc.lab.shortcutrun.play.PlayEventListener;
+import dev.jorel.commandapi.CommandAPI;
+import net.kunmc.lab.shortcutrun.command.Command;
+import net.kunmc.lab.shortcutrun.command.CommandTest;
+import net.kunmc.lab.shortcutrun.listener.EditEventListener;
+import net.kunmc.lab.shortcutrun.listener.RenderEventListener;
+import net.kunmc.lab.shortcutrun.manager.MainManager;
+import net.kunmc.lab.shortcutrun.listener.PlayEventListener;
+import net.kunmc.lab.shortcutrun.manager.StageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Scoreboard;
 
 public class ShortcutRunPlugin extends JavaPlugin {
 
     private static ShortcutRunPlugin instance;
 
-    public ShortcutRunPlugin(ShortcutRunPlugin instance) {
-        this.instance = instance;
+    public ShortcutRunPlugin() {
+        this.instance = this;
     }
 
-    private StageList stageList;
-    private GameManager gameManager;
+    private MainManager mainManager;
+    private StageManager stageManager;
+
+    @Override
+    public void onLoad() {
+        CommandAPI.onLoad(true);
+    }
 
     @Override
     public void onEnable() {
@@ -28,20 +34,26 @@ public class ShortcutRunPlugin extends JavaPlugin {
         reloadConfig();
 
         Bukkit.getPluginManager().registerEvents(new PlayEventListener(), this);
+        Bukkit.getPluginManager().registerEvents(new EditEventListener(), this);
+        Bukkit.getPluginManager().registerEvents(new RenderEventListener(), this);
 
-        stageList = new StageList();
-        try {
-            stageList.load();
-        } catch (ConfigLoadException e) {
-            e.printStackTrace();
-        }
+        mainManager = new MainManager();
+        stageManager = new StageManager();
+        // stageManager.load();
 
-        gameManager = new GameManager();
-        gameManager.runTaskTimer(this, 0, 1);
+        CommandAPI.onEnable(this);
+
+        Command.register();
+        CommandTest.register();
+
     }
 
-    public GameManager getGameManager() {
-        return gameManager;
+    public MainManager getMainManager() {
+        return mainManager;
+    }
+
+    public StageManager getStageManager() {
+        return stageManager;
     }
 
     public static ShortcutRunPlugin getInstance() {

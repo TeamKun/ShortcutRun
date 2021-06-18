@@ -1,4 +1,4 @@
-package net.kunmc.lab.shortcutrun.edit;
+package net.kunmc.lab.shortcutrun.listener;
 
 import org.bukkit.event.Listener;
 
