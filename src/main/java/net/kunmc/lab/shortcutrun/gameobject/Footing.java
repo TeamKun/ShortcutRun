@@ -6,7 +6,6 @@ import org.bukkit.util.Vector;
 public class Footing {
 
     private Vector location;
-    private FootingType type;
 
     private boolean isPickedUp = false;
 
@@ -23,9 +22,6 @@ public class Footing {
         double z = jsonObject.get("z").getAsDouble();
         location = new Vector(x, y, z);
 
-        String typeName = jsonObject.get("type").getAsString();
-        type = FootingType.valueOf(typeName);
-
     }
 
     public JsonObject save() {
@@ -35,8 +31,6 @@ public class Footing {
         jsonObject.addProperty("x", location.getX());
         jsonObject.addProperty("y", location.getY());
         jsonObject.addProperty("z", location.getZ());
-
-        jsonObject.addProperty("type", type.toString());
 
         return jsonObject;
     }
