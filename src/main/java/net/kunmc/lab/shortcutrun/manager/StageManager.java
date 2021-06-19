@@ -6,7 +6,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import net.kunmc.lab.shortcutrun.ShortcutRunPlugin;
-import net.kunmc.lab.shortcutrun.exception.ConfigLoadException;
 import net.kunmc.lab.shortcutrun.gameobject.Footing;
 import net.kunmc.lab.shortcutrun.gameobject.Stage;
 import org.bukkit.configuration.file.FileConfiguration;
