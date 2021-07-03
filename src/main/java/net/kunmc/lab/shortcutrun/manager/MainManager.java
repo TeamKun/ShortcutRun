@@ -66,4 +66,12 @@ public class MainManager {
     public void debug() {
         renderSystem.render(Bukkit.getWorlds().get(0));
     }
+
+    public RenderSystem getRenderSystem() {
+        return renderSystem;
+    }
+
+    public Stage getSelectedStage() {
+        return stage;
+    }
 }

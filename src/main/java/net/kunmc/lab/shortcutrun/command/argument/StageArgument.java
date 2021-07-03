@@ -17,6 +17,6 @@ public class StageArgument extends CustomArgument<Stage> {
             }
             return stage;
         });
-        overrideSuggestions(sender -> ShortcutRunPlugin.getInstance().getStageManager().getStages().stream().map(stage -> stage.getName()).toArray(String[]::new));
+        overrideSuggestions(sender -> ShortcutRunPlugin.getInstance().getStageManager().getStages().stream().map(stage -> stage.name).toArray(String[]::new));
     }
 }

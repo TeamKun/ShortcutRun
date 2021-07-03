@@ -1,11 +1,19 @@
 package net.kunmc.lab.shortcutrun.gameobject;
 
 import com.google.gson.JsonObject;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.util.Vector;
 
 public class Footing {
 
-    private Vector location;
+    public Stage parentStage;
+
+    private double x;
+    private double y;
+    private double z;
+    private float yaw;
+    private float pitch;
 
     private boolean isPickedUp = false;
 
@@ -17,10 +25,11 @@ public class Footing {
 
     public void load(JsonObject jsonObject) {
 
-        double x = jsonObject.get("x").getAsDouble();
-        double y = jsonObject.get("y").getAsDouble();
-        double z = jsonObject.get("z").getAsDouble();
-        location = new Vector(x, y, z);
+        x = jsonObject.get("x").getAsDouble();
+        y = jsonObject.get("y").getAsDouble();
+        z = jsonObject.get("z").getAsDouble();
+        yaw = jsonObject.get("yaw").getAsFloat();
+        pitch = jsonObject.get("pitch").getAsFloat();
 
     }
 
@@ -28,14 +37,17 @@ public class Footing {
 
         JsonObject jsonObject = new JsonObject();
 
-        jsonObject.addProperty("x", location.getX());
-        jsonObject.addProperty("y", location.getY());
-        jsonObject.addProperty("z", location.getZ());
+        jsonObject.addProperty("x", x);
+        jsonObject.addProperty("y", y);
+        jsonObject.addProperty("z", z);
+        jsonObject.addProperty("yaw", yaw);
+        jsonObject.addProperty("pitch", pitch);
 
         return jsonObject;
     }
 
-    public Vector getLocation() {
-        return location;
+    public Location getAsBukkitLocation(World world) {
+        return new Location(world, x, y, z, yaw, pitch);
     }
+
 }

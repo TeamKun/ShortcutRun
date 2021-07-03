@@ -23,6 +23,7 @@ public class RenderSystem {
 
     private Stage stage;
     private Map<Footing, Entity> footingEntities = new HashMap<>();
+    private Map<Entity, Footing> entityFooting = new HashMap<>();
 
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -31,16 +32,18 @@ public class RenderSystem {
 
     public void clear() {
         footingEntities.clear();
+        entityFooting.clear();
     }
 
     public void render(World world) {
-        stage.getFootings().forEach(footing -> {
+        stage.footings.forEach(footing -> {
             if (footingEntities.containsKey(footing)) {
                 return;
             }
             // create footing entity
-            Entity entity = world.spawnEntity(footing.getLocation().toLocation(world), EntityType.ARMOR_STAND);
+            Entity entity = world.spawnEntity(footing.getAsBukkitLocation(world), EntityType.ARMOR_STAND);
             footingEntities.put(footing, entity);
+            entityFooting.put(entity, footing);
         });
     }
 
@@ -54,6 +57,14 @@ public class RenderSystem {
 
         Utils.getTopPassenger(player).addPassenger(silverfish);
 
+    }
+
+    public Entity getEntityByFooting(Footing footing) {
+        return footingEntities.get(footing);
+    }
+
+    public Footing getFootingByEntity(Entity entity) {
+        return entityFooting.get(entity);
     }
 
     public void renderFooting(Player player) {

@@ -6,7 +6,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import net.kunmc.lab.shortcutrun.ShortcutRunPlugin;
-import net.kunmc.lab.shortcutrun.gameobject.Footing;
 import net.kunmc.lab.shortcutrun.gameobject.Stage;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -18,7 +17,7 @@ public class StageManager {
     private Map<String, Stage> stages = new HashMap<>();
 
     public void add(Stage stage) {
-        stages.put(stage.getName(), stage);
+        stages.put(stage.name, stage);
     }
 
     public Stage findStageFromName(String name) {
@@ -26,6 +25,7 @@ public class StageManager {
     }
 
     public void load() {
+
         ShortcutRunPlugin pluginInstance = ShortcutRunPlugin.getInstance();
         FileConfiguration config = pluginInstance.getConfig();
         JsonElement jsonElement = new Gson().toJsonTree(config.get("stages"));
@@ -47,6 +47,7 @@ public class StageManager {
             Stage stage = Stage.fromJsonObject((JsonObject) jsonFooting);
             add(stage);
         }
+
     }
 
     public void save() {
@@ -68,4 +69,5 @@ public class StageManager {
     public List<Stage> getStages() {
         return stages.entrySet().stream().map(entry -> entry.getValue()).collect(Collectors.toList());
     }
+
 }

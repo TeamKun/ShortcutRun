@@ -10,8 +10,8 @@ import java.util.List;
 
 public class Stage {
 
-    private String name;
-    private List<Footing> footings = new ArrayList<>();
+    public String name;
+    public List<Footing> footings = new ArrayList<>();
 
     public Stage(String name) {
         this.name = name;
@@ -33,7 +33,9 @@ public class Stage {
             if (!(jsonFooting instanceof JsonObject)) {
                 continue;
             }
-            footings.add(Footing.fromJsonObject((JsonObject) jsonFooting));
+            Footing footing = Footing.fromJsonObject((JsonObject) jsonFooting);
+            footing.parentStage = this;
+            footings.add(footing);
         }
 
     }
@@ -52,13 +54,5 @@ public class Stage {
         jsonObject.add("footings", jsonArray);
 
         return jsonObject;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public List<Footing> getFootings() {
-        return footings;
     }
 }
