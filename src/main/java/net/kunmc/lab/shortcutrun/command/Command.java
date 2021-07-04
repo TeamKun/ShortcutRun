@@ -6,6 +6,7 @@ import dev.jorel.commandapi.arguments.StringArgument;
 import net.kunmc.lab.shortcutrun.ShortcutRunPlugin;
 import net.kunmc.lab.shortcutrun.command.argument.StageArgument;
 import net.kunmc.lab.shortcutrun.gameobject.Stage;
+import org.bukkit.ChatColor;
 
 public class Command {
 
@@ -33,6 +34,20 @@ public class Command {
                             .getMainManager()
                             .setStage((Stage) objects[0]);
                     commandSender.sendMessage("ステージを選択しました");
+                });
+
+        CommandAPICommand stageInfo = new CommandAPICommand("stageInfo")
+
+                .executes((commandSender, objects) -> {
+                    Stage stage = ShortcutRunPlugin
+                            .getInstance()
+                            .getMainManager()
+                            .getSelectedStage();
+                    if (stage == null) {
+                        commandSender.sendMessage(ChatColor.RED + "ステージが選択されていません！");
+                        return;
+                    }
+                    commandSender.sendMessage("ステージ情報\n" + "足場数:" + stage.footings.size());
                 });
 
         CommandAPICommand play = new CommandAPICommand("play");
@@ -65,6 +80,7 @@ public class Command {
                 .withSubcommand(edit)
                 .withSubcommand(select)
                 .withSubcommand(config)
+                .withSubcommand(stageInfo)
                 .register();
     }
 

@@ -34,8 +34,7 @@ public class Stage {
                 continue;
             }
             Footing footing = Footing.fromJsonObject((JsonObject) jsonFooting);
-            footing.parentStage = this;
-            footings.add(footing);
+            addFooting(footing);
         }
 
     }
@@ -54,5 +53,10 @@ public class Stage {
         jsonObject.add("footings", jsonArray);
 
         return jsonObject;
+    }
+
+    public void addFooting(Footing footing) {
+        footing.parentStage = this;
+        footings.add(footing);
     }
 }

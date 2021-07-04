@@ -17,6 +17,16 @@ public class Footing {
 
     private boolean isPickedUp = false;
 
+    public Footing(double x, double y, double z, float yaw, float pitch) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.yaw = yaw;
+        this.pitch = pitch;
+    }
+
+    private Footing() {}
+
     public static Footing fromJsonObject(JsonObject jsonObject) {
         Footing footing = new Footing();
         footing.load(jsonObject);

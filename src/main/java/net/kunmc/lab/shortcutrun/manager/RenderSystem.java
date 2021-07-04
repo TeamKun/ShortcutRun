@@ -16,6 +16,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.spigotmc.event.entity.EntityDismountEvent;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 
@@ -36,14 +37,26 @@ public class RenderSystem {
     }
 
     public void render(World world) {
+
+        Iterator<Map.Entry<Footing, Entity>> iterator = footingEntities.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Entity entity = iterator.next().getValue();
+            if (entity.isDead()) {
+                iterator.remove();
+                entityFooting.remove(entity);
+            }
+        }
+
         stage.footings.forEach(footing -> {
-            if (footingEntities.containsKey(footing)) {
+            Entity entity = footingEntities.get(footing);
+            if (entity != null) {
                 return;
             }
             // create footing entity
-            Entity entity = world.spawnEntity(footing.getAsBukkitLocation(world), EntityType.ARMOR_STAND);
-            footingEntities.put(footing, entity);
-            entityFooting.put(entity, footing);
+
+            Entity newEntity = RenderSystem.Utils.spwanFootingArmorStand(footing.getAsBukkitLocation(world));
+            footingEntities.put(footing, newEntity);
+            entityFooting.put(newEntity, footing);
         });
     }
 
