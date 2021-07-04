@@ -5,6 +5,8 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.util.Vector;
 
+import java.util.stream.Collectors;
+
 public class Footing {
 
     public Stage parentStage;
@@ -31,6 +33,30 @@ public class Footing {
         Footing footing = new Footing();
         footing.load(jsonObject);
         return footing;
+    }
+
+    public void remove() {
+        if (isRemoved()) {
+            return;
+        }
+        parentStage.footings.remove(this);
+        parentStage = null;
+    }
+
+    public boolean isRemoved() {
+        return parentStage == null;
+    }
+
+    public boolean isPickedUp() {
+        return isPickedUp;
+    }
+
+    public void pickUp() {
+        isPickedUp = true;
+    }
+
+    public void reset() {
+        isPickedUp = false;
     }
 
     public void load(JsonObject jsonObject) {

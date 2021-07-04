@@ -20,13 +20,20 @@ public class StageManager {
         stages.put(stage.name, stage);
     }
 
+    public void delete(Stage stage) {
+        stages.remove(stage.name);
+    }
+
     public Stage findStageFromName(String name) {
         return stages.get(name);
     }
 
     public void load() {
 
+        stages.clear();
+
         ShortcutRunPlugin pluginInstance = ShortcutRunPlugin.getInstance();
+        pluginInstance.reloadConfig();
         FileConfiguration config = pluginInstance.getConfig();
         JsonElement jsonElement = new Gson().toJsonTree(config.get("stages"));
 
@@ -34,8 +41,7 @@ public class StageManager {
         try {
             jsonArray = jsonElement.getAsJsonArray();
         } catch (IllegalStateException e) {
-            e.printStackTrace();
-            return;
+            jsonArray = new JsonArray();
         }
 
         Iterator<JsonElement> iteratorStages = jsonArray.iterator();

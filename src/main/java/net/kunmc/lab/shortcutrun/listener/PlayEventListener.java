@@ -1,21 +1,19 @@
 package net.kunmc.lab.shortcutrun.listener;
 
 import net.kunmc.lab.shortcutrun.ShortcutRunPlugin;
+import net.kunmc.lab.shortcutrun.gameobject.Footing;
 import net.kunmc.lab.shortcutrun.manager.MainManager;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.Vector;
+
+import java.util.List;
 
 public class PlayEventListener implements Listener {
 
@@ -30,16 +28,16 @@ public class PlayEventListener implements Listener {
         }
 
         Player player = e.getPlayer();
+
         if (isExcluded(player)) {
             return;
         }
+
         if (!player.isOnGround()) {
             return;
         }
-        int footingCount = mainManager.getFooting(player);
-        if (footingCount <= 0) {
-            return;
-        }
+
+        int footingAmount = mainManager.getFootingAmount(player);
 
         Location to = e.getTo();
         Location from = e.getFrom();
@@ -48,10 +46,22 @@ public class PlayEventListener implements Listener {
             return;
         }
 
-        // pickup
+        // 足場を拾う処理 begin
 
-        // pickup end
+        List<Footing> footings = mainManager.getSelectedStage().getNearbyFooting(player.getLocation(), 1.5);
 
+        footings.stream()
+                .filter(footing -> !footing.isPickedUp())
+                .forEach(footing -> {
+                    footing.pickUp();
+                    mainManager.setFootingAmount(player, footingAmount + 1);
+                });
+
+        // 足場を拾う処理 end
+
+        if (footingAmount <= 0) {
+            return;
+        }
 
         // attack
         if (player.isOnGround() && player.isSprinting() && player.getPotionEffect(PotionEffectType.SPEED) == null) {
@@ -62,13 +72,12 @@ public class PlayEventListener implements Listener {
         if (to.getBlockY() - from.getBlockY() != 0) {
             return;
         }
-        Block block = to.getWorld().getBlockAt(to.getBlockX(), to.getBlockY() - 1, to.getBlockZ());
-        if (!block.getType().equals(Material.AIR)) {
+
+        boolean placed = mainManager.tryPlaceFooting(to.clone().add(0, -1, 0));
+        if (!placed) {
             return;
         }
-
-        mainManager.placeFooting(player, block);
-        mainManager.setFooting(player, footingCount - 1);
+        mainManager.setFootingAmount(player, footingAmount - 1);
 
         // shortcutrun.renderFooting(player);
         // player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, shortcutrun.getConfig().getInt("duration", 60), shortcutrun.getConfig().getInt("level", 0)));

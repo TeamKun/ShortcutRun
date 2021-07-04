@@ -3,10 +3,12 @@ package net.kunmc.lab.shortcutrun.gameobject;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import org.bukkit.Location;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Stage {
 
@@ -58,5 +60,17 @@ public class Stage {
     public void addFooting(Footing footing) {
         footing.parentStage = this;
         footings.add(footing);
+    }
+
+    public void resetFooting() {
+        footings.forEach(footing -> footing.reset());
+    }
+
+    public List<Footing> getNearbyFooting(Location location, double distance) {
+
+        return footings.stream()
+                .filter(footing -> footing.getAsBukkitLocation(location.getWorld()).distance(location) < distance)
+                .collect(Collectors.toList());
+
     }
 }

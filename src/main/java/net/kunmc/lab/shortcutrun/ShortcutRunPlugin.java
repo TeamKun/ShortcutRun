@@ -38,14 +38,22 @@ public class ShortcutRunPlugin extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new RenderEventListener(), this);
 
         mainManager = new MainManager();
+        mainManager.runTaskTimer(this, 0 ,1);
         stageManager = new StageManager();
-        // stageManager.load();
+        stageManager.load();
 
         CommandAPI.onEnable(this);
 
         Command.register();
         CommandTest.register();
 
+    }
+
+    @Override
+    public void onDisable() {
+        mainManager.reset();
+        stageManager.save();
+        saveConfig();
     }
 
     public MainManager getMainManager() {
