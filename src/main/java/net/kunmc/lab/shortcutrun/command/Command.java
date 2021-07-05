@@ -1,5 +1,6 @@
 package net.kunmc.lab.shortcutrun.command;
 
+import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandPermission;
 import dev.jorel.commandapi.arguments.EnchantmentArgument;
@@ -216,6 +217,10 @@ public class Command {
                 .withSubcommand(config)
                 .withSubcommand(stageInfo)
                 .register();
+    }
+
+    public static void unregister() {
+        CommandAPI.unregister("shortcutrun", true);
     }
 
 }

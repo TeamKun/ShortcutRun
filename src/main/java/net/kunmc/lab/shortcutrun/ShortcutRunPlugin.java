@@ -2,7 +2,6 @@ package net.kunmc.lab.shortcutrun;
 
 import dev.jorel.commandapi.CommandAPI;
 import net.kunmc.lab.shortcutrun.command.Command;
-import net.kunmc.lab.shortcutrun.command.CommandTest;
 import net.kunmc.lab.shortcutrun.config.Configration;
 import net.kunmc.lab.shortcutrun.listener.EditEventListener;
 import net.kunmc.lab.shortcutrun.manager.MainManager;
@@ -49,7 +48,6 @@ public class ShortcutRunPlugin extends JavaPlugin {
         CommandAPI.onEnable(this);
 
         Command.register();
-        CommandTest.register();
 
     }
 
@@ -58,6 +56,7 @@ public class ShortcutRunPlugin extends JavaPlugin {
         mainManager.reset();
         stageManager.save();
         saveConfig();
+        Command.unregister();
     }
 
     public MainManager getMainManager() {
