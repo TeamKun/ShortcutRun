@@ -4,7 +4,6 @@ import dev.jorel.commandapi.CommandAPI;
 import net.kunmc.lab.shortcutrun.command.Command;
 import net.kunmc.lab.shortcutrun.command.CommandTest;
 import net.kunmc.lab.shortcutrun.listener.EditEventListener;
-import net.kunmc.lab.shortcutrun.listener.RenderEventListener;
 import net.kunmc.lab.shortcutrun.manager.MainManager;
 import net.kunmc.lab.shortcutrun.listener.PlayEventListener;
 import net.kunmc.lab.shortcutrun.manager.StageManager;
@@ -35,7 +34,6 @@ public class ShortcutRunPlugin extends JavaPlugin {
 
         Bukkit.getPluginManager().registerEvents(new PlayEventListener(), this);
         Bukkit.getPluginManager().registerEvents(new EditEventListener(), this);
-        Bukkit.getPluginManager().registerEvents(new RenderEventListener(), this);
 
         mainManager = new MainManager();
         mainManager.runTaskTimer(this, 0 ,1);

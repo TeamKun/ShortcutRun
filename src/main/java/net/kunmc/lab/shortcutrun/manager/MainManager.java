@@ -142,10 +142,6 @@ public class MainManager extends BukkitRunnable {
     @Override
     public void run() {
 
-        if (stage == null) {
-            return;
-        }
-
         // プレイ中の足場の復活
 
         if (isPlaying()) {

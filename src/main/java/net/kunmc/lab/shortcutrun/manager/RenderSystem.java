@@ -3,23 +3,17 @@ package net.kunmc.lab.shortcutrun.manager;
 import net.kunmc.lab.shortcutrun.ShortcutRunPlugin;
 import net.kunmc.lab.shortcutrun.gameobject.Footing;
 import net.kunmc.lab.shortcutrun.gameobject.Stage;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.*;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.spigotmc.event.entity.EntityDismountEvent;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class RenderSystem {
 
@@ -37,6 +31,28 @@ public class RenderSystem {
     }
 
     public void render(World world) {
+
+        // falling Blockが消えないようにする
+        Bukkit.getWorlds().get(0).getEntitiesByClass(FallingBlock.class).stream()
+                .filter(fallingBlock -> fallingBlock.getBlockData().getMaterial().equals(Material.OAK_PLANKS) || fallingBlock.getBlockData().getMaterial().equals(Material.BARRIER))
+                .forEach(fallingBlock -> {
+
+                    if (Utils.getBottomVehicle(fallingBlock) instanceof Player) {
+
+                        fallingBlock.setTicksLived(1);
+
+                    } else {
+
+                        fallingBlock.remove();
+
+                    }
+
+                });
+
+        // player の頭上の足場の表示
+        Bukkit.getOnlinePlayers().forEach(player -> {
+            renderPlayerFooting(player);
+        });
 
         if (stage == null) {
             return;
@@ -92,81 +108,61 @@ public class RenderSystem {
         );
     }
 
-    public void addFooting(Player player) {
+    public void renderPlayerFooting(Player player) {
 
-        Location location = player.getLocation();
+        int footingAmount = ShortcutRunPlugin.getInstance().getMainManager().getFootingAmount(player);
 
-        Silverfish silverfish = Utils.spwanConnectiveSilverfish(location);
-        ArmorStand armorStand = Utils.spwanFootingArmorStand(location);
-        silverfish.addPassenger(armorStand);
+        if (footingAmount <= 0) {
 
-        Utils.getTopPassenger(player).addPassenger(silverfish);
+            player.getPassengers().forEach(entity -> entity.remove());
+            return;
 
-    }
+        }
 
-    public Entity getEntityByFooting(Footing footing) {
-        return footingEntities.get(footing);
-    }
+        if (player.getPassengers().isEmpty()) {
 
-    public Footing getFootingByEntity(Entity entity) {
-        List<Footing> matchedFootings = footingEntities
-                .entrySet()
-                .stream()
-                .filter(entry -> entity == entry.getValue())
-                .map(entry -> entry.getKey())
-                .collect(Collectors.toList());
-        return matchedFootings.isEmpty() ? null : matchedFootings.get(0);
-    }
+            player.addPassenger(Utils.spwanFootingFallingBlock(player.getLocation(), Material.BARRIER));
 
-    public void renderFooting(Player player) {
-        int footings = 0;
-        int realFootings = Utils.getPassengerCount(player) / 2;
-        int dif = footings - realFootings;
+        }
 
-
-        if (dif == 0) {
+        if (player.isDead()) {
             return;
         }
-        int max = 50;
-        if (dif > 0) {
-            dif = Math.min(dif, max);
-            for (int i = 1 ; i <= dif ; i ++) {
-                addFooting(player);
+
+        int maxRenderingBlock = 50;
+        int compressRatio = 1;
+
+        int now = Utils.getPassengerNumber(player.getPassengers().get(0));
+        int expected = Math.min(footingAmount / compressRatio, maxRenderingBlock);
+
+        if (now == expected) {
+            return;
+        }
+
+        if (now > expected) {
+
+            for (int i = 1 ; i <= now - expected ; i ++) {
+                Utils.getTopPassenger(player).remove();
             }
+
         } else {
-            Utils.removePassengers(Utils.getPassengerByNumber(player, footings * 2));
+
+            for (int i = 1 ; i <= expected - now ; i ++) {
+                Utils.getTopPassenger(player).addPassenger(Utils.spwanFootingFallingBlock(player.getLocation(), Material.OAK_PLANKS));
+            }
+
         }
     }
 
     private static class Utils {
 
-        private static Silverfish spwanConnectiveSilverfish(Location location) {
-            return (Silverfish) location.getWorld().spawnEntity(
-                    location,
-                    EntityType.SILVERFISH,
-                    CreatureSpawnEvent.SpawnReason.CUSTOM,
-                    entity -> {
-                        Silverfish silverfish = ((Silverfish) entity);
-                        silverfish.setSilent(true);
-                        silverfish.setAI(false);
-                        silverfish.setInvulnerable(true);
-                        silverfish.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 0, false, false));
-                    }
-            );
-        }
-
-        private static ArmorStand spwanFootingArmorStand(Location location) {
-            return (ArmorStand) location.getWorld().spawnEntity(
-                    location,
-                    EntityType.ARMOR_STAND,
-                    CreatureSpawnEvent.SpawnReason.CUSTOM,
-                    entity -> {
-                        ArmorStand armorStand = ((ArmorStand) entity);
-                        armorStand.setMarker(true);
-                        armorStand.setHelmet(new ItemStack(Material.OAK_SLAB));
-                        armorStand.setVisible(false);
-                    }
-            );
+        private static FallingBlock spwanFootingFallingBlock(Location location, Material material) {
+            FallingBlock fallingBlock = location.getWorld().spawnFallingBlock(location, material, (byte) 0);
+            fallingBlock.setPersistent(true);
+            fallingBlock.setInvulnerable(true);
+            fallingBlock.setGravity(false);
+            fallingBlock.setDropItem(false);
+            return fallingBlock;
         }
 
         private static ArmorStand createFooting(Location location) {
@@ -187,30 +183,21 @@ public class RenderSystem {
             return getTopPassenger(entity.getPassengers().get(0));
         }
 
-        private static Entity getPassengerByNumber(Entity entity, int num) {
-            if (num <= 0) {
+        private static Entity getBottomVehicle(Entity entity) {
+            Entity vehicle = entity.getVehicle();
+            if (vehicle == null) {
                 return entity;
             }
-            if (entity.getPassengers().isEmpty()) {
-                return entity;
-            }
-            return getPassengerByNumber(entity.getPassengers().get(0), num - 1);
+            return getBottomVehicle(vehicle);
         }
 
-        private static void removePassengers(Entity entity) {
-            if (entity.getPassengers().isEmpty()) {
-                return;
-            }
-            Entity passenger = entity.getPassengers().get(0);
-            removePassengers(passenger);
-            passenger.remove();
-        }
+        // 再帰処理でエンティティの頭上のエンティティ数をカウント
 
-        private static int getPassengerCount(Entity entity) {
+        private static int getPassengerNumber(Entity entity) {
             if (entity.getPassengers().isEmpty()) {
                 return 0;
             }
-            return getPassengerCount(entity.getPassengers().get(0)) + 1;
+            return getPassengerNumber(entity.getPassengers().get(0)) + 1;
         }
     }
 }
