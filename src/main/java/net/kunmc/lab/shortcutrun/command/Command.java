@@ -2,9 +2,13 @@ package net.kunmc.lab.shortcutrun.command;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandPermission;
+import dev.jorel.commandapi.arguments.EnchantmentArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
 import net.kunmc.lab.shortcutrun.ShortcutRunPlugin;
+import net.kunmc.lab.shortcutrun.command.argument.ConfigItemArgument;
 import net.kunmc.lab.shortcutrun.command.argument.StageArgument;
+import net.kunmc.lab.shortcutrun.config.ConfigItem;
+import net.kunmc.lab.shortcutrun.config.Configration;
 import net.kunmc.lab.shortcutrun.gameobject.Stage;
 import net.kunmc.lab.shortcutrun.manager.MainManager;
 import net.kunmc.lab.shortcutrun.manager.StageManager;
@@ -154,7 +158,7 @@ public class Command {
                                     .getInstance()
                                     .getStageManager()
                                     .save();
-                            commandSender.sendMessage("configを保存しました");
+                            commandSender.sendMessage(ChatColor.GREEN + "configを保存しました");
                         })
                 )
 
@@ -164,7 +168,42 @@ public class Command {
                                     .getInstance()
                                     .getStageManager()
                                     .load();
-                            commandSender.sendMessage("configを読み込みました");
+                            commandSender.sendMessage(ChatColor.GREEN + "configを読み込みました");
+                        })
+                )
+
+                .withSubcommand(new CommandAPICommand("get")
+                        .withArguments(new ConfigItemArgument("configItem"))
+                        .executes((commandSender, objects) -> {
+                            ConfigItem configItem = (ConfigItem) objects[0];
+                            Object value = ShortcutRunPlugin
+                                    .getInstance()
+                                    .getConfigration()
+                                    .get(configItem);
+                            commandSender.sendMessage(configItem.getDescription() + ": " + value);
+                        })
+                )
+
+                .withSubcommand(new CommandAPICommand("set")
+                        .withArguments(new ConfigItemArgument("configItem"))
+                        .withArguments(new StringArgument("value").overrideSuggestions((sender, objects) -> {
+                            ConfigItem configItem = (ConfigItem) objects[0];
+                            if (configItem.getDefaultValue() instanceof Boolean) {
+                                return new String[] { "true" , "false" };
+                            } else {
+                                return new String[] {};
+                            }
+                        }))
+                        .executes((commandSender, objects) -> {
+                            ConfigItem configItem = (ConfigItem) objects[0];
+                            Object value = objects[1];
+                            Configration configration = ShortcutRunPlugin.getInstance().getConfigration();
+                            if (configItem.isValid(value)) {
+                                configration.set(configItem, value);
+                                commandSender.sendMessage(ChatColor.GREEN + configItem.getConfigKey() + " の値を " + configItem.cast(value) + " に設定しました");
+                            } else {
+                                commandSender.sendMessage(ChatColor.RED + "" + value + " は無効な値です！\n" + configItem.getConfigKey() + ": " + configItem.getCondition());
+                            }
                         })
                 );
 
