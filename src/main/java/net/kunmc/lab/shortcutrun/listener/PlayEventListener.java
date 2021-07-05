@@ -3,6 +3,7 @@ package net.kunmc.lab.shortcutrun.listener;
 import net.kunmc.lab.shortcutrun.ShortcutRunPlugin;
 import net.kunmc.lab.shortcutrun.gameobject.Footing;
 import net.kunmc.lab.shortcutrun.manager.MainManager;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -11,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.List;
@@ -63,24 +65,45 @@ public class PlayEventListener implements Listener {
             return;
         }
 
-        // attack
-        if (player.isOnGround() && player.isSprinting() && player.getPotionEffect(PotionEffectType.SPEED) == null) {
+        // player への攻撃処理 begin
+        if (player.isOnGround() && player.isSprinting() && player.getPotionEffect(PotionEffectType.SPEED) != null) {
+
+            double distance = 1;
+
+            Bukkit.getOnlinePlayers().stream()
+                    .forEach(otherPlayer -> {
+
+                        if (otherPlayer == player) return;
+
+                        if (isExcluded(otherPlayer)) return;
+
+                        if (otherPlayer.isDead()) return;
+
+                        if (!player.getWorld().equals(otherPlayer.getWorld())) return;
+
+                        if (player.getLocation().distance(otherPlayer.getLocation()) > distance) return;
+
+                        otherPlayer.setHealth(0);
+                        otherPlayer.getWorld().createExplosion(otherPlayer.getLocation(), 4, false, false);
+                    });
 
         }
-        // attack end
+        // player への攻撃処理 end
 
         if (to.getBlockY() - from.getBlockY() != 0) {
             return;
         }
+
+        // 足場の設置処理 begin
 
         boolean placed = mainManager.tryPlaceFooting(to.clone().add(0, -1, 0));
         if (!placed) {
             return;
         }
         mainManager.setFootingAmount(player, footingAmount - 1);
+        player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0));
 
-        // shortcutrun.renderFooting(player);
-        // player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, shortcutrun.getConfig().getInt("duration", 60), shortcutrun.getConfig().getInt("level", 0)));
+        // 足場の設置処理 end
 
     }
 
