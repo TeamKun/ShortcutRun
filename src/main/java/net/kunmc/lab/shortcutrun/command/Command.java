@@ -77,6 +77,7 @@ public class Command {
                                 return;
                             }
                             mainManager.setEditing(false);
+                            ShortcutRunPlugin.getInstance().getStageManager().save();
                             commandSender.sendMessage(ChatColor.GREEN + "編集モードを無効化しました");
                             return;
 
@@ -153,23 +154,10 @@ public class Command {
 
         CommandAPICommand config = new CommandAPICommand("config")
 
-                .withSubcommand(new CommandAPICommand("save")
+                .withSubcommand(new CommandAPICommand("reset")
                         .executes((commandSender, objects) -> {
-                            ShortcutRunPlugin
-                                    .getInstance()
-                                    .getStageManager()
-                                    .save();
-                            commandSender.sendMessage(ChatColor.GREEN + "configを保存しました");
-                        })
-                )
-
-                .withSubcommand(new CommandAPICommand("load")
-                        .executes((commandSender, objects) -> {
-                            ShortcutRunPlugin
-                                    .getInstance()
-                                    .getStageManager()
-                                    .load();
-                            commandSender.sendMessage(ChatColor.GREEN + "configを読み込みました");
+                            ShortcutRunPlugin.getInstance().getConfigration().setToDefault();
+                            commandSender.sendMessage(ChatColor.GREEN + "全ての設定項目を初期値に設定しました");
                         })
                 )
 
@@ -181,7 +169,7 @@ public class Command {
                                     .getInstance()
                                     .getConfigration()
                                     .get(configItem);
-                            commandSender.sendMessage(configItem.getDescription() + ": " + value);
+                            commandSender.sendMessage(configItem.getDescription() + ": " + value + " (初期値: " + configItem.getDefaultValue() + ")");
                         })
                 )
 

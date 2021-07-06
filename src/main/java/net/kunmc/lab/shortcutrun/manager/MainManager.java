@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.kunmc.lab.shortcutrun.ShortcutRunPlugin;
+import net.kunmc.lab.shortcutrun.config.Configration;
 import net.kunmc.lab.shortcutrun.gameobject.Footing;
 import net.kunmc.lab.shortcutrun.gameobject.Stage;
 import org.bukkit.Bukkit;
@@ -49,9 +50,9 @@ public class MainManager extends BukkitRunnable {
 
         boolean placed = false;
 
-        double radis = 1;
+        double radis = Configration.placeFootingDistance.get();
 
-        int blockRadis = 2;
+        int blockRadis = Configration.placeFootingBlock.get();
         blockRadis --;
 
         Location location = playerLocation.clone().add(- blockRadis, 0, - blockRadis);
@@ -110,14 +111,6 @@ public class MainManager extends BukkitRunnable {
         this.playing = playing;
     }
 
-    public void debug() {
-        renderSystem.render(Bukkit.getWorlds().get(0));
-    }
-
-    public RenderSystem getRenderSystem() {
-        return renderSystem;
-    }
-
     public Stage getSelectedStage() {
         return stage;
     }
@@ -137,6 +130,12 @@ public class MainManager extends BukkitRunnable {
 
         stage.resetFooting();
 
+        if (Configration.resetOnFinish.get()) {
+
+            Bukkit.getOnlinePlayers().forEach(player -> setFootingAmount(player, 0));
+
+        }
+
     }
 
     @Override
@@ -149,7 +148,7 @@ public class MainManager extends BukkitRunnable {
             List<Footing> pickedUpFootings = stage.footings.stream().filter(footing -> footing.isPickedUp()).collect(Collectors.toList());
             Collections.shuffle(pickedUpFootings);
 
-            int resetCount = Math.min(10, pickedUpFootings.size());
+            int resetCount = Math.min(Configration.footingRestorePerTick.get(), pickedUpFootings.size());
             for (int i = 0 ; resetCount > i ; i ++) {
                 pickedUpFootings.get(i).reset();
             }

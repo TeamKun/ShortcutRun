@@ -1,6 +1,7 @@
 package net.kunmc.lab.shortcutrun.listener;
 
 import net.kunmc.lab.shortcutrun.ShortcutRunPlugin;
+import net.kunmc.lab.shortcutrun.config.Configration;
 import net.kunmc.lab.shortcutrun.gameobject.Footing;
 import net.kunmc.lab.shortcutrun.manager.MainManager;
 import org.bukkit.Bukkit;
@@ -56,7 +57,7 @@ public class PlayEventListener implements Listener {
                 .filter(footing -> !footing.isPickedUp())
                 .forEach(footing -> {
                     footing.pickUp();
-                    mainManager.setFootingAmount(player, footingAmount + 1);
+                    mainManager.setFootingAmount(player, footingAmount + Configration.footingGainRate.get());
                 });
 
         // 足場を拾う処理 end
@@ -68,7 +69,7 @@ public class PlayEventListener implements Listener {
         // player への攻撃処理 begin
         if (player.isOnGround() && player.isSprinting() && player.getPotionEffect(PotionEffectType.SPEED) != null) {
 
-            double distance = 1;
+            double distance = Configration.attackRadis.get();
 
             Bukkit.getOnlinePlayers().stream()
                     .forEach(otherPlayer -> {
@@ -101,7 +102,7 @@ public class PlayEventListener implements Listener {
             return;
         }
         mainManager.setFootingAmount(player, footingAmount - 1);
-        player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Configration.accelerationTick.get(), Configration.accelerationLevel.get()));
 
         // 足場の設置処理 end
 

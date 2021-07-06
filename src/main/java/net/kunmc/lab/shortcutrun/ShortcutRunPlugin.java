@@ -32,7 +32,6 @@ public class ShortcutRunPlugin extends JavaPlugin {
     public void onEnable() {
 
         saveDefaultConfig();
-        reloadConfig();
 
         Bukkit.getPluginManager().registerEvents(new PlayEventListener(), this);
         Bukkit.getPluginManager().registerEvents(new EditEventListener(), this);
@@ -54,8 +53,10 @@ public class ShortcutRunPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         mainManager.reset();
+
         stageManager.save();
-        saveConfig();
+        configration.save();
+
         Command.unregister();
     }
 

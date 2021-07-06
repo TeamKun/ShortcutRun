@@ -8,8 +8,27 @@ import java.util.stream.Collectors;
 
 public class Configration {
 
-    public static ConfigItem<Integer> maxRenderFooting = new ConfigItem<>("maxRenderFooting", 50, integer -> integer >= 0, "プレイヤーの頭上の足場の最大値", "0 以上の整数");
+    public static ConfigItem<Integer> renderFootingMax = new ConfigItem<>("renderFootingMax", 50, integer -> integer >= 0, "プレイヤーの頭上の足場の最大値", "0 以上の整数");
+
+    public static ConfigItem<Integer> renderFootingCompressRatio = new ConfigItem<>("renderFootingCompressRatio", 1, integer -> integer >= 1, "プレイヤーの頭上の足場の圧縮率", "1 以上の整数");
+
     public static ConfigItem<Boolean> resetOnFinish = new ConfigItem<>("resetOnFinish", true, "ゲーム終了時の自動リセット", "true or false");
+
+    public static ConfigItem<Double> attackRadis = new ConfigItem<>("attackRadis", 1.0d, d -> d >= 0, "他プレイヤーへの攻撃範囲", "0.0 以上の数");
+
+    public static ConfigItem<Integer> accelerationLevel = new ConfigItem<>("accelerationLevel", 0, integer -> integer >= 0 && 256 > integer, "足場設置時の加速レベル", "0 以上 255 以下の整数");
+
+    public static ConfigItem<Integer> accelerationTick = new ConfigItem<>("accelerationTick", 60, integer -> integer >= 0, "足場設置時の加速時間(tick)", "0 以上の整数");
+
+    public static ConfigItem<Integer> footingGainRate = new ConfigItem<>("footingGainRate", 1, integer -> integer >= 0, "足場回収時の倍率", "0 以上の整数");
+
+    public static ConfigItem<Integer> footingRestorePerTick = new ConfigItem<>("footingRestorePerTick", 5, integer -> integer >= 0, "1tickあたりの足場復活量", "0 以上の整数");
+
+    public static ConfigItem<Integer> placeFootingBlock = new ConfigItem<>("placeFootingBlock", 2, integer -> integer >= 1, "足場設置の最大ブロック範囲(あんまいじんなくてもいい)", "1 以上の整数");
+
+    public static ConfigItem<Double> placeFootingDistance = new ConfigItem<>("placeFootingDistance", 1.0d, d -> d >= 0, "足場設置の範囲", "0 以上の数");
+
+
 
     private Map<ConfigItem, Object> configMap = new HashMap<>();
 
@@ -30,9 +49,33 @@ public class Configration {
         }
     }
 
+    public void setToDefault() {
+
+        getAllConfigItem().forEach(configItem -> configMap.compute(configItem, (item, o) -> configItem.getDefaultValue()));
+
+    }
+
     public void load() {
-        loadValue(maxRenderFooting);
+        ShortcutRunPlugin.getInstance().reloadConfig();
+
+        loadValue(renderFootingMax);
+        loadValue(renderFootingCompressRatio);
         loadValue(resetOnFinish);
+        loadValue(attackRadis);
+        loadValue(accelerationLevel);
+        loadValue(accelerationTick);
+        loadValue(footingGainRate);
+        loadValue(footingRestorePerTick);
+        loadValue(placeFootingBlock);
+        loadValue(placeFootingDistance);
+    }
+
+    public void save() {
+        getAllConfigItem().forEach(configItem -> {
+            Object value = configMap.get(configItem);
+            ShortcutRunPlugin.getInstance().getConfig().set(configItem.getConfigKey(), value);
+        });
+        ShortcutRunPlugin.getInstance().saveConfig();
     }
 
     private void loadValue(ConfigItem configItem) {

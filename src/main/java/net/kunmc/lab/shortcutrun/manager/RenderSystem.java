@@ -1,6 +1,7 @@
 package net.kunmc.lab.shortcutrun.manager;
 
 import net.kunmc.lab.shortcutrun.ShortcutRunPlugin;
+import net.kunmc.lab.shortcutrun.config.Configration;
 import net.kunmc.lab.shortcutrun.gameobject.Footing;
 import net.kunmc.lab.shortcutrun.gameobject.Stage;
 import org.bukkit.Bukkit;
@@ -129,8 +130,8 @@ public class RenderSystem {
             return;
         }
 
-        int maxRenderingBlock = 50;
-        int compressRatio = 1;
+        int maxRenderingBlock = Configration.renderFootingMax.get();
+        int compressRatio = Configration.renderFootingCompressRatio.get();
 
         int now = Utils.getPassengerNumber(player.getPassengers().get(0));
         int expected = Math.min(footingAmount / compressRatio, maxRenderingBlock);

@@ -3,6 +3,7 @@ package net.kunmc.lab.shortcutrun.config;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import net.kunmc.lab.shortcutrun.ShortcutRunPlugin;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -69,5 +70,9 @@ public class ConfigItem<T> {
 
     public String getCondition() {
         return condition;
+    }
+
+    public T get() {
+        return ShortcutRunPlugin.getInstance().getConfigration().get(this);
     }
 }
