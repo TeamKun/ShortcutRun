@@ -51,7 +51,7 @@ public class PlayEventListener implements Listener {
 
         // 足場を拾う処理 begin
 
-        List<Footing> footings = mainManager.getSelectedStage().getNearbyFooting(player.getLocation(), 1.5);
+        List<Footing> footings = mainManager.getSelectedStage().getNearbyFooting(player.getLocation(), Configration.footingGainDistance.get());
 
         footings.stream()
                 .filter(footing -> !footing.isPickedUp())

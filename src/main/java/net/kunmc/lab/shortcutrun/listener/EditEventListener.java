@@ -1,6 +1,7 @@
 package net.kunmc.lab.shortcutrun.listener;
 
 import net.kunmc.lab.shortcutrun.ShortcutRunPlugin;
+import net.kunmc.lab.shortcutrun.config.Configration;
 import net.kunmc.lab.shortcutrun.gameobject.Footing;
 import net.kunmc.lab.shortcutrun.gameobject.Stage;
 import net.kunmc.lab.shortcutrun.manager.MainManager;
@@ -134,6 +135,6 @@ public class EditEventListener implements Listener {
             return;
         }
 
-        stage.getNearbyFooting(player.getLocation(), 3).forEach(footing -> footing.remove());
+        stage.getNearbyFooting(player.getLocation(), Configration.editRemoveFootingDistance.get()).forEach(footing -> footing.remove());
     }
 }

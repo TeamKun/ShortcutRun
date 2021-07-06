@@ -22,11 +22,15 @@ public class Configration {
 
     public static ConfigItem<Integer> footingGainRate = new ConfigItem<>("footingGainRate", 1, integer -> integer >= 0, "足場回収時の倍率", "0 以上の整数");
 
+    public static ConfigItem<Double> footingGainDistance = new ConfigItem<>("footingGainDistance", 1.5d, d -> d >= 0, "足場回収の範囲", "0 以上の数");
+
     public static ConfigItem<Integer> footingRestorePerTick = new ConfigItem<>("footingRestorePerTick", 5, integer -> integer >= 0, "1tickあたりの足場復活量", "0 以上の整数");
 
     public static ConfigItem<Integer> placeFootingBlock = new ConfigItem<>("placeFootingBlock", 2, integer -> integer >= 1, "足場設置の最大ブロック範囲(あんまいじんなくてもいい)", "1 以上の整数");
 
     public static ConfigItem<Double> placeFootingDistance = new ConfigItem<>("placeFootingDistance", 1.0d, d -> d >= 0, "足場設置の範囲", "0 以上の数");
+
+    public static ConfigItem<Double> editRemoveFootingDistance = new ConfigItem<>("editRemoveFootingDistance", 3.0d, d -> d >= 0, "編集時の足場削除範囲", "0 以上の数");
 
 
 
@@ -65,9 +69,11 @@ public class Configration {
         loadValue(accelerationLevel);
         loadValue(accelerationTick);
         loadValue(footingGainRate);
+        loadValue(footingGainDistance);
         loadValue(footingRestorePerTick);
         loadValue(placeFootingBlock);
         loadValue(placeFootingDistance);
+        loadValue(editRemoveFootingDistance);
     }
 
     public void save() {
