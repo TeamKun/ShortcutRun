@@ -3,7 +3,6 @@ package net.kunmc.lab.shortcutrun.command.argument;
 import dev.jorel.commandapi.arguments.CustomArgument;
 import net.kunmc.lab.shortcutrun.ShortcutRunPlugin;
 import net.kunmc.lab.shortcutrun.config.ConfigItem;
-import net.kunmc.lab.shortcutrun.gameobject.Stage;
 
 public class ConfigItemArgument extends CustomArgument<ConfigItem> {
 

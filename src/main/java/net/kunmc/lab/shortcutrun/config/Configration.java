@@ -1,9 +1,11 @@
 package net.kunmc.lab.shortcutrun.config;
 
 import net.kunmc.lab.shortcutrun.ShortcutRunPlugin;
-import org.bukkit.configuration.file.FileConfiguration;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Configration {

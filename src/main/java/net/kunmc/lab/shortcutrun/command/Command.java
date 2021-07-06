@@ -2,10 +2,7 @@ package net.kunmc.lab.shortcutrun.command;
 
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.CommandPermission;
-import dev.jorel.commandapi.arguments.EnchantmentArgument;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
-import dev.jorel.commandapi.arguments.PlayerArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
 import net.kunmc.lab.shortcutrun.ShortcutRunPlugin;
 import net.kunmc.lab.shortcutrun.command.argument.ConfigItemArgument;
@@ -16,9 +13,7 @@ import net.kunmc.lab.shortcutrun.gameobject.Stage;
 import net.kunmc.lab.shortcutrun.manager.MainManager;
 import net.kunmc.lab.shortcutrun.manager.StageManager;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.Collection;
 

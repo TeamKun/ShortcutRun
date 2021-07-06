@@ -1,10 +1,5 @@
 package net.kunmc.lab.shortcutrun.manager;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import net.kunmc.lab.shortcutrun.ShortcutRunPlugin;
 import net.kunmc.lab.shortcutrun.config.Configration;
 import net.kunmc.lab.shortcutrun.gameobject.Footing;
 import net.kunmc.lab.shortcutrun.gameobject.Stage;
@@ -12,18 +7,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 

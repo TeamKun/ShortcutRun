@@ -4,8 +4,6 @@ import dev.jorel.commandapi.arguments.CustomArgument;
 import net.kunmc.lab.shortcutrun.ShortcutRunPlugin;
 import net.kunmc.lab.shortcutrun.gameobject.Stage;
 
-import java.util.Optional;
-
 public class StageArgument extends CustomArgument<Stage> {
 
     public StageArgument(String nodeName) {
