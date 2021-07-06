@@ -14,6 +14,8 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
@@ -156,5 +158,22 @@ public class MainManager extends BukkitRunnable {
         }
 
         renderSystem.render(Bukkit.getWorlds().get(0));
+    }
+
+    public static void giveEditItems(Player player) {
+
+        player.getInventory().setItem(1, getNamedItemStack(Material.ARROW, "足場x3"));
+        player.getInventory().setItem(2, getNamedItemStack(Material.ARROW, "足場x6"));
+        player.getInventory().setItem(4, getNamedItemStack(Material.BARRIER, "オフハンドに持つと近くの足場が消えるよ"));
+        player.getInventory().setItem(6, getNamedItemStack(Material.ARROW, "足場x12"));
+        player.getInventory().setItem(7, getNamedItemStack(Material.ARROW, "足場x24"));
+    }
+
+    private static ItemStack getNamedItemStack(Material material, String name) {
+        ItemStack itemStack = new ItemStack(material);
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        itemMeta.setDisplayName(name);
+        itemStack.setItemMeta(itemMeta);
+        return itemStack;
     }
 }

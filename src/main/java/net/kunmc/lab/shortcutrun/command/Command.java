@@ -4,6 +4,8 @@ import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandPermission;
 import dev.jorel.commandapi.arguments.EnchantmentArgument;
+import dev.jorel.commandapi.arguments.EntitySelectorArgument;
+import dev.jorel.commandapi.arguments.PlayerArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
 import net.kunmc.lab.shortcutrun.ShortcutRunPlugin;
 import net.kunmc.lab.shortcutrun.command.argument.ConfigItemArgument;
@@ -14,12 +16,19 @@ import net.kunmc.lab.shortcutrun.gameobject.Stage;
 import net.kunmc.lab.shortcutrun.manager.MainManager;
 import net.kunmc.lab.shortcutrun.manager.StageManager;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.Collection;
 
 public class Command {
 
     public static void register() {
 
         CommandAPICommand edit = new CommandAPICommand("edit")
+
+                .withPermission("shortcutrun.command.edit")
 
                 .withSubcommand(new CommandAPICommand("create")
                         .withArguments(new StringArgument("stage_name"))
@@ -49,6 +58,27 @@ public class Command {
                             stageManager.delete(stage);
                             ShortcutRunPlugin.getInstance().getMainManager().unselect();
                             commandSender.sendMessage(ChatColor.GREEN + "ステージ名:" + stage.name + "を削除しました");
+                        })
+                )
+
+                .withSubcommand(new CommandAPICommand("giveEditItem")
+
+                        .withArguments(new EntitySelectorArgument("target", EntitySelectorArgument.EntitySelector.MANY_PLAYERS))
+                        .executes((commandSender, objects) -> {
+                            Collection<Player> players = (Collection<Player>) objects[0];
+
+                            players.forEach(player -> {
+                                MainManager.giveEditItems(player);
+                                player.sendMessage(ChatColor.GREEN + "ステージ編集用アイテムを受け取りました");
+                            });
+
+                            if (players.size() == 0) {
+                                commandSender.sendMessage(ChatColor.RED + "プレイヤーが見つかりませんでした");
+                            } else if (players.size() == 1) {
+                                commandSender.sendMessage(ChatColor.GREEN + players.iterator().next().getName() + "にステージ編集用アイテムを与えました");
+                            } else {
+                                commandSender.sendMessage(ChatColor.GREEN + "" + players.size() + "人のプレイヤーにステージ編集用アイテムを与えました");
+                            }
                         })
                 )
 
@@ -86,6 +116,8 @@ public class Command {
 
         CommandAPICommand select = new CommandAPICommand("select")
 
+                .withPermission("shortcutrun.command.select")
+
                 .withArguments(new StageArgument("stage"))
                 .executes((commandSender, objects) -> {
                     ShortcutRunPlugin
@@ -95,26 +127,9 @@ public class Command {
                     commandSender.sendMessage("ステージを選択しました");
                 });
 
-        CommandAPICommand stageInfo = new CommandAPICommand("stageInfo")
-
-                .executes((commandSender, objects) -> {
-                    Stage stage = ShortcutRunPlugin
-                            .getInstance()
-                            .getMainManager()
-                            .getSelectedStage();
-                    if (stage == null) {
-                        commandSender.sendMessage(ChatColor.RED + "ステージが選択されていません！");
-                        return;
-                    }
-                    StringBuilder stringBuilder = new StringBuilder();
-                    stringBuilder
-                            .append("ステージ情報").append("\n")
-                            .append("名前:" + stage.name).append("\n")
-                            .append("足場数:" + stage.footings.size()).append("\n");
-                    commandSender.sendMessage(stringBuilder.toString());
-                });
-
         CommandAPICommand play = new CommandAPICommand("play")
+
+                .withPermission("shortcutrun.command.play")
 
                 .withSubcommand(new CommandAPICommand("on")
                         .executes((commandSender, objects) -> {
@@ -153,6 +168,8 @@ public class Command {
                 );
 
         CommandAPICommand config = new CommandAPICommand("config")
+
+                .withPermission("shortcutrun.command.config")
 
                 .withSubcommand(new CommandAPICommand("reset")
                         .executes((commandSender, objects) -> {
@@ -198,12 +215,10 @@ public class Command {
 
 
         new CommandAPICommand("shortcutrun")
-                .withPermission(CommandPermission.OP)
                 .withSubcommand(edit)
                 .withSubcommand(play)
                 .withSubcommand(select)
                 .withSubcommand(config)
-                .withSubcommand(stageInfo)
                 .register();
     }
 

@@ -163,6 +163,7 @@ public class RenderSystem {
             fallingBlock.setInvulnerable(true);
             fallingBlock.setGravity(false);
             fallingBlock.setDropItem(false);
+            fallingBlock.setSilent(true);
             return fallingBlock;
         }
 
@@ -174,6 +175,7 @@ public class RenderSystem {
                 armorStand.setGlowing(true);
                 armorStand.setHelmet(new ItemStack(Material.OAK_SLAB));
                 armorStand.setVisible(false);
+                armorStand.setSilent(true);
             });
         }
 
