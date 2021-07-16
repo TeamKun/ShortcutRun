@@ -56,7 +56,7 @@ public class MainManager extends BukkitRunnable {
 
                 Block block = location.clone().add(offsetX, 0, offsetZ).getBlock();
 
-                if (!block.getType().equals(Material.AIR)) {
+                if (!block.getType().isAir()) {
                     continue;
                 }
 
