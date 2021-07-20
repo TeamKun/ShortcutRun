@@ -12,6 +12,7 @@ import net.kunmc.lab.shortcutrun.config.Configration;
 import net.kunmc.lab.shortcutrun.gameobject.Stage;
 import net.kunmc.lab.shortcutrun.manager.MainManager;
 import net.kunmc.lab.shortcutrun.manager.StageManager;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -156,6 +157,11 @@ public class Command {
                             }
                             mainManager.setPlaying(false);
                             mainManager.reset();
+                            if (Configration.resetOnFinish.get()) {
+
+                                Bukkit.getOnlinePlayers().forEach(player -> mainManager.setFootingAmount(player, 0));
+
+                            }
                             commandSender.sendMessage(ChatColor.GREEN + "プレイ終了しました");
                             return;
 

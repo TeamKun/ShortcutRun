@@ -122,13 +122,13 @@ public class MainManager extends BukkitRunnable {
 
         placedFootingLocations.clear();
 
-        stage.resetFooting();
+        if (stage != null) {
 
-        if (Configration.resetOnFinish.get()) {
-
-            Bukkit.getOnlinePlayers().forEach(player -> setFootingAmount(player, 0));
+            stage.resetFooting();
 
         }
+
+        renderSystem.clear();
 
     }
 

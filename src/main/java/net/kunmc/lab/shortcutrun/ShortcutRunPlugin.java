@@ -48,6 +48,8 @@ public class ShortcutRunPlugin extends JavaPlugin {
 
         Command.register();
 
+        mainManager.reset();
+
     }
 
     @Override
