@@ -115,7 +115,7 @@ public class RenderSystem {
 
         if (player.getPassengers().isEmpty()) {
 
-            for (int i = 0 ; i < 3 ; i ++) {
+            for (int i = 0 ; i < 4 ; i ++) {
 
                 //Utils.getTopPassenger(player).addPassenger(Utils.spwanFootingFallingBlock(player.getLocation(), Material.BARRIER));
 
@@ -133,7 +133,7 @@ public class RenderSystem {
         int maxRenderingBlock = Configration.renderFootingMax.get();
         int compressRatio = Configration.renderFootingCompressRatio.get();
 
-        int now = Utils.getPassengerNumber(player) - 3;
+        int now = Utils.getPassengerNumber(player) - 4;
         int expected = Math.min(footingAmount / compressRatio, maxRenderingBlock);
 
         if (now == expected) {
